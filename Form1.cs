@@ -42,10 +42,14 @@ namespace HentaiDownloader
                 Doujin doujin = new Doujin(PageParser.ParseDoujinName(urlTxt.Text));
                 string directory = Path.Combine(pathTxt.Text,doujin.Name);
                 doujin.DownloadPath = pathTxt.Text;
+
+                int i = 0;
                 foreach (var url in lst) 
                 {
-                    DoujinPage page = new DoujinPage(Path.GetFileName(url), url);
+                    string pageName = PageParser.ParsePageIndexName(i, lst.Length, url);
+                    DoujinPage page = new DoujinPage(pageName, url);
                     doujin.AddPage(page);
+                    i++;
                 }
                 Directory.CreateDirectory(directory);
                 doujin.DownloadAll();

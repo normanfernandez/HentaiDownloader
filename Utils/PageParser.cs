@@ -5,59 +5,66 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using HentaiDownloader.Pages;
 
 namespace HentaiDownloader.Utils
 {
     public class PageParser
     {
-        public static string [] ParsePagesList(string hentaiUrl)
-        {
-            List<string> resultList = new List<string>();
+        private const string HENTAI2READ = "http://hentai2read.com";
+        private const string DOUJINMOE = "http://www.doujin-moe.us";
 
-            WebClient client = new WebClient();
-            string url = client.DownloadString(hentaiUrl);
-            string jsVariable = "wpm_mng_rdr_img_lst";
-            int variableIndex = url.IndexOf(jsVariable);
-            if (variableIndex == -1)
-                throw new Exception("Not valid hentai page!");
-            url = url.Substring(variableIndex, url.Length - variableIndex);
-            int arrayTerminator = url.IndexOf("]");
-            int arrayInitiator = url.IndexOf("[") + 1;
-            url = url.Substring(0, arrayTerminator);
-            url = url.Substring(arrayInitiator, url.Length - arrayInitiator - 1);
-            string [] urlList = url.Split(',');
-            foreach (var str in urlList)
+        public static string[] ParsePagesList(string hentaiUrl)
+        {
+            PageDataInterface pageData;
+            string domain = new Uri(hentaiUrl).GetLeftPart(UriPartial.Authority);
+            switch (domain)
             {
-                string parsedUrl = str;
-                parsedUrl = parsedUrl.Replace("\\","");
-                parsedUrl = parsedUrl.Replace("\"", "");
-                parsedUrl = parsedUrl.Replace("\\", "");
-                parsedUrl = parsedUrl.Replace("*", "");
-                parsedUrl = parsedUrl.Replace("?", "");
-                parsedUrl = parsedUrl.Replace("|", "");
-                resultList.Add(parsedUrl);
+                case HENTAI2READ:
+                    pageData = new Hentai2Read(hentaiUrl);
+                    break;
+                case DOUJINMOE:
+                    pageData = new DoujinMoe(hentaiUrl);
+                    break;
+                default:
+                    throw new Exception("Not a valid hentai page!");
             }
-            return resultList.ToArray();
+
+            return pageData.GetPagesList(); ;
         }
 
-        public static string ParseDoujinName(string hentaiUrl) 
+        public static string ParseDoujinName(string hentaiUrl)
         {
-            WebClient client = new WebClient();
-            string result = client.DownloadString(hentaiUrl);
-            string collectionStart = "<span itemprop=\"itemreviewed\">";
-            int initialIndex = result.IndexOf(collectionStart);
-            result = result.Substring(initialIndex, result.Length - initialIndex);
-            int nameStart = result.IndexOf(">") + 1;
-            result = result.Substring(nameStart, result.Length - nameStart - 1);
-            int nameEnd = result.IndexOf("<");
-            result = result.Substring(0, nameEnd);
-            result = WebUtility.HtmlDecode(result);
-            result = result.Replace("'", "");
-            result = result.Replace(":", "");
-            result = result.Replace("\\", "");
-            result = result.Replace("*", "");
-            result = result.Replace("?", "");
-            result = result.Replace("|", "");
+            PageDataInterface pageData;
+            string domain = new Uri(hentaiUrl).GetLeftPart(UriPartial.Authority);
+            switch (domain)
+            {
+                case HENTAI2READ:
+                    pageData = new Hentai2Read(hentaiUrl);
+                    break;
+                case DOUJINMOE:
+                    pageData = new DoujinMoe(hentaiUrl);
+                    break;
+                default:
+                    throw new Exception("Not a valid hentai page!");
+            }
+
+            return pageData.GetDoujinName();
+        }
+
+        public static string ParsePageIndexName(int index, int listSize, string pageUrl)
+        {
+            string result = "";
+            string extension = Path.GetExtension(pageUrl);
+            int paramInit = extension.IndexOf("?");
+
+            if (paramInit > 1)
+            {
+                extension = extension.Substring(0, paramInit);
+            }
+
+            result = (index.ToString("D" + listSize.ToString().Length)) + extension;
+
             return result;
         }
     }
