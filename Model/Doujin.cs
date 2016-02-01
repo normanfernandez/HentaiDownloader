@@ -17,19 +17,9 @@ namespace HentaiDownloader.Model
             Name = name;
         }
 
-        public string Name;
+        public readonly string Name;
         public string DownloadPath;
-
-        private int PagesTotal;
-        private List<DoujinPage> PageList = new List<DoujinPage>();
-
-        public void DownloadAll()
-        {
-            foreach(var page in PageList)
-            {
-                PageDownloader.DownloadPage(page,DownloadPath + "\\" + Name);
-            }
-        }
+        public readonly List<DoujinPage> PageList = new List<DoujinPage>();
 
         public void AddPage(DoujinPage page) 
         {

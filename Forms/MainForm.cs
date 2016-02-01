@@ -11,6 +11,7 @@ using System.Net;
 using System.IO;
 using HentaiDownloader.Utils;
 using HentaiDownloader.Model;
+using HentaiDownloader.Forms;
 
 namespace HentaiDownloader
 {
@@ -41,7 +42,7 @@ namespace HentaiDownloader
                 string [] lst = PageParser.ParsePagesList(urlTxt.Text);
                 Doujin doujin = new Doujin(PageParser.ParseDoujinName(urlTxt.Text));
                 string directory = Path.Combine(pathTxt.Text,doujin.Name);
-                doujin.DownloadPath = pathTxt.Text;
+                doujin.DownloadPath = directory;
 
                 int i = 0;
                 foreach (var url in lst) 
@@ -52,9 +53,9 @@ namespace HentaiDownloader
                     i++;
                 }
                 Directory.CreateDirectory(directory);
-                doujin.DownloadAll();
-
-                MessageBox.Show(this, "Finished downloading: " + doujin.Name);
+                DownloadForm downloader = new DownloadForm(doujin);
+                downloader.ShowDialog();
+                
             }
             catch(Exception ex)
             {
