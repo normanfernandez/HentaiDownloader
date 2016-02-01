@@ -17,30 +17,15 @@ namespace HentaiDownloader.Pages
             WebClient client = new WebClient();
 
             string result = client.DownloadString(hentaiUrl); //whole html code of the page
-            string titleStart = "<div class=\"title\">";
-            string titleEnd = "<div class=\"counter\">";
+            string titleStart = "<title>Doujin-moe - ";
+            string titleEnd = "</title>";
             int initialIndex = result.IndexOf(titleStart);
             
-            result = result.Substring(initialIndex);
+            result = result.Substring(initialIndex + titleStart.Length);
 
             int endIndex = result.IndexOf(titleEnd);
 
-            result = result.Substring(0, endIndex); //By these part, the title must be parsed twice from <a> tag
-
-            result = result.Replace("'", "");
-            result = result.Replace(":", "");
-            result = result.Replace("\\", "");
-            result = result.Replace("*", "");
-            result = result.Replace("?", "");
-            result = result.Replace("|", "");
-            result = result.Replace("\n", "");
-            result = result.Replace("\t", "");
-
-            result = result.Substring(result.IndexOf("<a href=\"") + "<a href=\"".Length);
-            result = result.Substring(result.IndexOf("<a href=\"") + "<a href=\"".Length);
-            result = result.Substring(result.IndexOf(">") + 1, result.IndexOf("</a>"));
-            result = result.Replace("</a></div>", "");
-
+            result = result.Substring(0, endIndex);
             return result;
         }
 
