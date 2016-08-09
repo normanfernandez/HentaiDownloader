@@ -36,11 +36,12 @@ namespace HentaiDownloader.Pages
 
         string[] PageDataInterface.GetPagesList()
         {
+            string baseUrl = "http://hentaicdn.com/hentai";
             List<string> resultList = new List<string>(); 
             WebClient client = new WebClient();
 
             string url = client.DownloadString(hentaiUrl); //whole html code of the page
-            string jsVariable = "wpm_mng_rdr_img_lst";
+            string jsVariable = "var rff_imageList = ";
             int variableIndex = url.IndexOf(jsVariable);
             if (variableIndex == -1)
                 throw new Exception("Not valid hentai page!");
@@ -59,7 +60,8 @@ namespace HentaiDownloader.Pages
                 parsedUrl = parsedUrl.Replace("*", "");
                 parsedUrl = parsedUrl.Replace("?", "");
                 parsedUrl = parsedUrl.Replace("|", "");
-                resultList.Add(parsedUrl);
+                var result = baseUrl + parsedUrl;
+                resultList.Add(result);
             }
 
             return resultList.ToArray();

@@ -80,6 +80,7 @@
             this.urlTxt.Name = "urlTxt";
             this.urlTxt.Size = new System.Drawing.Size(256, 20);
             this.urlTxt.TabIndex = 4;
+            this.urlTxt.Text = "http://hentai2read.com/glamorous_mother_and_indecent_aunt/1/";
             // 
             // pathTxt
             // 
@@ -87,6 +88,7 @@
             this.pathTxt.Name = "pathTxt";
             this.pathTxt.Size = new System.Drawing.Size(256, 20);
             this.pathTxt.TabIndex = 5;
+            this.pathTxt.Text = "C:\\Users\\elnor\\Desktop";
             // 
             // Form1
             // 
